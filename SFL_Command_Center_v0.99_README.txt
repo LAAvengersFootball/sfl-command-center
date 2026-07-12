@@ -1,0 +1,18 @@
+SFL Command Center v0.99
+
+Open SFL_Command_Center_v0.99.html in Chrome, Edge, Safari, or Firefox.
+
+Included:
+- Original Avengers dashboard
+- Draft Room
+- Complete 57-player offensive-line board
+- Four verified OL scouting profiles
+- My Team roster and contract preview
+- Drafted and Drafted by Me controls
+- Browser local-storage saving
+- GM Assistant placeholder
+
+Important:
+- Draft status saves only on the browser/device where you use the file.
+- A live hosted version with Supabase will sync status across devices.
+- School logos and external source links require internet access.
