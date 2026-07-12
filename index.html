@@ -87,7 +87,27 @@ function showOL(id){let p=olPlayers.find(x=>x.id===id),st=statusOf(id);olDetail.
 const positions=[...new Set(roster.map(p=>p.pos))].sort();teamPos.innerHTML+=positions.map(p=>`<option>${p}</option>`).join('');
 function statsHtml(p){let groups=Object.entries(p.stats||{});if(!groups.length)return `<p class="small">No recorded statistics in the supplied 2026 report.</p>`;return groups.map(([g,o])=>`<div class="section"><h4>${g.toUpperCase()}</h4><div class="statgrid">${Object.entries(o).map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('')}</div></div>`).join('')}
 function bio(p){return `<div class="bio ${openPlayer===p.name?'open':''}" id="bio-${p.name.replace(/\W/g,'')}"><div class="bioHeader">${photo(p)}<div><div class="bioName">${p.name}</div><div class="small">${p.pos} · ${p.height}, ${p.weight} lbs · ${p.college}</div><div style="margin-top:8px"><span class="badge">${p.status}</span> <span class="badge">${p.entry}</span></div></div></div><div class="twoCol"><div class="section"><h4>CONTRACT</h4><div class="contract"><div><span>Base salaries</span><b>${p.terms}</b></div><div><span>Signing bonus</span><b>${p.bonus}</b></div><div><span>Years remaining</span><b>${p.years}</b></div><div><span>Current cap</span><b>${p.cap}</b></div></div></div><div>${statsHtml(p)}</div></div></div>`}
-function renderRoster(){let q=teamSearch.value.toLowerCase(),pos=teamPos.value;let list=roster.filter(p=>(!q||p.name.toLowerCase().includes(q)||p.college.toLowerCase().includes(q))&&(pos==='ALL'||p.pos===pos));let groups={};list.forEach(p=>(groups[p.pos]??=[]).push(p));rosterGroups.innerHTML=Object.entries(groups).map(([pos,ps])=>`<div class="posGroup"><h3>${pos}</h3><div class="playerGrid">${ps.map(p=>`<div class="playerCard" onclick="toggleBio('${p.name.replaceAll("'","\\'")}')"><div class="playerTop">${photo(p)}<div><div class="pname">${p.name}</div><div class="small">${p.height}, ${p.weight} lbs · ${p.college}</div><div class="cap">${p.cap} CAP</div></div></div></div>${openPlayer&&ps.some(x=>x.name===openPlayer)?bio(ps.find(x=>x.name===openPlayer)):''}</div></div>`).join('')}
+function renderRoster(){
+  const q=document.getElementById('teamSearch').value.toLowerCase();
+  const selectedPos=document.getElementById('teamPos').value;
+  const list=roster.filter(p=>(!q||p.name.toLowerCase().includes(q)||p.college.toLowerCase().includes(q))&&(selectedPos==='ALL'||p.pos===selectedPos));
+  const grouped={};
+  list.forEach(p=>{ if(!grouped[p.pos]) grouped[p.pos]=[]; grouped[p.pos].push(p); });
+  let html='';
+  Object.entries(grouped).forEach(([position,players])=>{
+    html+=`<div class="posGroup"><h3>${position}</h3><div class="playerGrid">`;
+    players.forEach(p=>{
+      const safeName=p.name.replaceAll("'","\\'");
+      html+=`<div class="playerCard" onclick="toggleBio('${safeName}')"><div class="playerTop">${photo(p)}<div><div class="pname">${p.name}</div><div class="small">${p.height}, ${p.weight} lbs · ${p.college}</div><div class="cap">${p.cap} CAP</div></div></div></div>`;
+    });
+    if(openPlayer){
+      const selected=players.find(x=>x.name===openPlayer);
+      if(selected) html+=bio(selected);
+    }
+    html+='</div></div>';
+  });
+  document.getElementById('rosterGroups').innerHTML=html;
+}
 function toggleBio(name){openPlayer=openPlayer===name?null:name;renderRoster();if(openPlayer)setTimeout(()=>document.getElementById('bio-'+name.replace(/\W/g,''))?.scrollIntoView({behavior:'smooth',block:'nearest'}),50)}
 teamSearch.addEventListener('input',()=>{openPlayer=null;renderRoster()});teamPos.addEventListener('input',()=>{openPlayer=null;renderRoster()});
 
