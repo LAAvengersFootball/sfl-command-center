@@ -1,0 +1,13 @@
+{
+  "name": "sfl-command-center",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SFL Command Center league management platform",
+  "scripts": {
+    "serve": "npx serve .",
+    "check": "node scripts/check-project.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
